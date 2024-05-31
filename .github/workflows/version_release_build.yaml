@@ -48,7 +48,7 @@ jobs:
 
     - name: Deploy
       run: |
-        windeployqt --release --no-translations --no-angle --no-opengl-sw ${{ github.workspace }}/release/GitHubActionsQt.exe
+        windeployqt ${{ github.workspace }}\release
 
     - name: Create Release
       id: create_release
