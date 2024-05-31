@@ -38,7 +38,7 @@ jobs:
     - name: Build with QMake and jom
       run: |
         qmake GitHubActionsQt.pro -spec win32-msvc
-        jom
+        ${{ github.workspace }}\jom\jom.exe
 
     - name: Deploy
       run: |
