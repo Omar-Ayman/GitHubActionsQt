@@ -27,12 +27,12 @@ jobs:
       with:
         path: |
           ${{ github.workspace }}/Qt
-        key: ${{ runner.os }}-QtCache-5.12.0
+        key: ${{ runner.os }}-QtCache-5.15.1
 
     - name: Build with QMake
       run: |
-        qmake -tp vc GitHubActionsQt.pro
-        msbuild GitHubActionsQt.sln /p:Configuration=Release
+        qmake GitHubActionsQt.pro -spec win32-msvc
+        jom
 
     - name: Deploy
       run: |
