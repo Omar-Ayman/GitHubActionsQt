@@ -1,0 +1,59 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v2
+
+    - name: Set up MSVC 2019
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: '5.12.0'
+        arch: 'win64_msvc2019_64'
+
+    - name: Cache Qt
+      uses: actions/cache@v2
+      with:
+        path: |
+          ${{ github.workspace }}/Qt
+        key: ${{ runner.os }}-QtCache-5.12.0
+
+    - name: Build with QMake
+      run: |
+        qmake -tp vc GitHubActionsQt.pro
+        msbuild GitHubActionsQt.sln /p:Configuration=Release
+
+    - name: Deploy
+      run: |
+        windeployqt --release --no-translations --no-angle --no-opengl-sw ${{ github.workspace }}/release/GitHubActionsQt.exe
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: GitHubActionsQt (${{ github.ref }})
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: .\release\GitHubActionsQt.exe
+        asset_name: GitHubActionsQt.exe
+        asset_content_type: application/octet-stream
