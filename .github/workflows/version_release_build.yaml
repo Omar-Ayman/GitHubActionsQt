@@ -34,11 +34,12 @@ jobs:
         Invoke-WebRequest -Uri "http://download.qt.io/official_releases/jom/jom.zip" -OutFile "jom.zip"
         Expand-Archive -Path "jom.zip" -DestinationPath "${{ github.workspace }}/jom"
         echo "${{ github.workspace }}\jom" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-        echo "${{ github.workspace }}\jom" | Out-File -FilePath $env:PATH -Encoding utf8 -Append
 
     - name: Build with QMake and jom
       run: |
         qmake GitHubActionsQt.pro -spec win32-msvc
+        echo $env:GITHUB_PATH
+        dir ${{ github.workspace }}\jom
         jom
 
     - name: Deploy
