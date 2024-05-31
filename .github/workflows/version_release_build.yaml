@@ -40,6 +40,7 @@ jobs:
         echo "${{ github.workspace }}\jom" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
     - name: Build with QMake and jom
+    # the echo and dir lines may seem unnecessary, but without them jom cannot run somehow!
       run: |
         qmake GitHubActionsQt.pro -spec win32-msvc
         echo $env:GITHUB_PATH
@@ -50,6 +51,9 @@ jobs:
       run: |
         windeployqt ${{ github.workspace }}\release
 
+    - name: Compress Release Folder
+      run: Compress-Archive -Path .\release\* -DestinationPath release.zip
+  
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -57,7 +61,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ github.ref }}
-        release_name: GitHubActionsQt (${{ github.ref }})
+        release_name: ${{ github.ref }}
         draft: false
         prerelease: false
 
@@ -67,6 +71,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: .\release\GitHubActionsQt.exe
-        asset_name: GitHubActionsQt.exe
-        asset_content_type: application/octet-stream
+        asset_path: .\release.zip
+        asset_name: GitHubActionsQt${{ github.ref }}.zip
+        asset_content_type: application/zip
