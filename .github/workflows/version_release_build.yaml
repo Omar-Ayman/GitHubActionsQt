@@ -32,13 +32,13 @@ jobs:
     - name: Install jom
       run: |
         Invoke-WebRequest -Uri "http://download.qt.io/official_releases/jom/jom.zip" -OutFile "jom.zip"
-        Expand-Archive -Path "jom.zip" -DestinationPath "${{ github.workspace }}"
-        echo "${{ github.workspace }}\jom" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        Expand-Archive -Path "jom.zip" -DestinationPath "${{ github.workspace }}/jom"
+        echo "${{ github.workspace }}/jom/jom.exe" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
     - name: Build with QMake and jom
       run: |
         qmake GitHubActionsQt.pro -spec win32-msvc
-        ${{ github.workspace }}\jom\jom.exe
+        jom
 
     - name: Deploy
       run: |
