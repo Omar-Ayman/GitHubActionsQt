@@ -20,6 +20,7 @@ jobs:
       with:
         version: '5.12.0'
         arch: 'win64_msvc2019_64'
+        setup-python: false
 
     - name: Cache Qt
       uses: actions/cache@v2
