@@ -44,16 +44,16 @@ jobs:
         # echo $env:GITHUB_PATH
         # dir ${{ github.workspace }}\jom
       run: |
-        "C:\Qt\5.15.1\msvc2019_64\bin\qmake.exe" ${{ github.workspace }}\GitHubActionsQt.pro -spec win32-msvc
+        "C:\Qt\5.15.1\msvc2019_64\bin\qmake.exe" "${{ github.workspace }}\GitHubActionsQt.pro" -spec win32-msvc
         "C:\Qt\Tools\QtCreator\bin\jom\jom.exe"
 
     - name: Deploy
       run: |
-        "C:\Qt\5.15.1\msvc2019_64\bin\windeployqt.exe" ${{ github.workspace }}\release
+        "C:\Qt\5.15.1\msvc2019_64\bin\windeployqt.exe" "${{ github.workspace }}\release"
 
     - name: Compress Release Folder into RAR
       run: |
-        "C:\Program Files\WinRAR\rar.exe" a -r ${{ github.workspace }}\release.rar ${{ github.workspace }}\release\
+        "C:\Program Files\WinRAR\rar.exe" a -r "${{ github.workspace }}\release.rar" "${{ github.workspace }}\release\""
   
     - name: Create Release
       id: create_release
